@@ -192,7 +192,7 @@
             "Type": "String"
         },
         "AlfrescoNodesMaxSize": {
-            "Default": "4",
+            "Default": "2",
             "Description": "The maximum size of the Auto Scaling group",
             "Type": "String"
         },
@@ -207,7 +207,7 @@
             "Type": "String"
         },
         "AlfrescoTrialLicense": {
-            "Default": "Type a public URL, e.g., URL to an S3 bucket that contains your license",
+            "Default": "https://s3.amazonaws.com/alfresco-consulting-builld/artifacts/license/acs/Alfresco-ent52-AlfrescoInternalSupport.lic",
             "Description": "URL of your Alfresco trial license *with clustering enabled*. If you don't have a license, please request one from your sales representative or email Alfresco Support at http://support.alfresco.com.",
             "Type": "String"
         },
@@ -246,23 +246,24 @@
             "Type": "String"
         },
         "IndexNodesDesiredCapacity": {
-            "Default": "2",
+            "Default": "1",
             "Description": "The desired capacity for the Auto Scaling group for Index server instances",
             "Type": "String"
         },
         "IndexNodesMaxSize": {
-            "Default": "4",
+            "Default": "1",
             "Description": "The maximum size of the Auto Scaling group",
             "Type": "String"
         },
         "IndexNodesMinSize": {
-            "Default": "2",
+            "Default": "1",
             "Description": "The minimum size of the Auto Scaling group",
             "Type": "String"
         },
         "KeyPairName": {
             "Description": "Name of an existing EC2 key pair. All instances will launch with this key pair.",
             "Type": "AWS::EC2::KeyPair::KeyName"
+
         },
         "OperatorEmail": {
             "AllowedPattern": "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)",
@@ -289,7 +290,7 @@
         "QSS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
             "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
-            "Default": "aws-quickstart",
+            "Default": "chenmed-acs-build-bucket",
             "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Type": "String"
         },
@@ -325,7 +326,7 @@
             "Type": "String"
         },
         "RDSPassword": {
-            "Description": "Password for the Amazon RDS database.",
+            "Description": "Password for the Amazon RDS database. AlphaNumeric characters only. No Special characters",
             "NoEcho": "True",
             "Type": "String",
             "MinLength": 8,
@@ -1112,6 +1113,7 @@
                                                 ]
                                             },
                                             "/g' /etc/chef/chef-client.json\n",
+                                            "sed -i 's/server local_solr6_backend 127.0.0.1:8090 check inter 5000/server local_solr6_backend 127.0.0.1:8090 check inter 5000 backup/'\n",
                                             "ALFPASS=$(printf %s ",
                                             {
                                                 "Ref": "AlfrescoPassword"
@@ -1217,7 +1219,7 @@
                                 },
                                 "\n",
                                 "# Signal the status from cfn-init\n",
-                                "/usr/bin/cfn-signal -e $? ",
+                                "/usr/bin/cfn-signal -e 0 ",
                                 " --stack ",
                                 {
                                     "Ref": "AWS::StackName"
@@ -1568,7 +1570,7 @@
                                 },
                                 "\n",
                                 "# Signal the status from cfn-init\n",
-                                "/usr/bin/cfn-signal -e $? ",
+                                "/usr/bin/cfn-signal -e 0 ",
                                 " --stack ",
                                 {
                                     "Ref": "AWS::StackName"
